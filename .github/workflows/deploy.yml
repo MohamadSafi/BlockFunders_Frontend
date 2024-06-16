@@ -28,7 +28,6 @@ jobs:
           environment: production
           description: Deploy to Vercel
           auto_merge: false
-          required_contexts: []
 
       - name: Deploy to Vercel
         env:
