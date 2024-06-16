@@ -1,2 +1,2 @@
-# ChainFunds
-ChainFunders is a Crowdfunding platform on Blockchain
+# BlockFunders_Frontend
+BlockFunders is a Crowdfunding platform on Blockchain
