@@ -11,6 +11,7 @@ import { Bars2Icon } from "@heroicons/react/24/solid";
 import ProfileMenu from "./ProfileMenu";
 import NavList from "./NavList";
 import { useAppwrite } from "../../providers/appwriteContext";
+import Link from "next/link";
 
 export function ResponsiveNavbar() {
   const { account, setUser } = useAppwrite();
@@ -26,16 +27,16 @@ export function ResponsiveNavbar() {
     );
   }, []);
 
-  React.useEffect(() => {
-    const fetchUser = async () => {
-      if (!user) {
-        setIsLoggedIn(false);
-      } else {
-        setIsLoggedIn(true);
-      }
-    };
-    fetchUser();
-  });
+  // React.useEffect(() => {
+  //   const fetchUser = async () => {
+  //     if (!user) {
+  //       setIsLoggedIn(false);
+  //     } else {
+  //       setIsLoggedIn(true);
+  //     }
+  //   };
+  //   fetchUser();
+  // });
 
   return (
     <Navbar className="mx-auto max-w-screen p-2 lg:rounded-full lg:pl-6 shadow-2xl bg-[#f6f0eb] border-[#f6f0eb]">
@@ -70,16 +71,20 @@ export function ResponsiveNavbar() {
             <Button
               size="sm"
               variant="text"
-              onClick={() => setIsLoggedIn(true)}
+              // onClick={() => setIsLoggedIn(true)}
             >
-              <span className="font-medium font-sans">Login</span>
+              <Link href="/login" className="font-medium font-sans">
+                Login
+              </Link>
             </Button>
             <Button
               size="sm"
               variant="text"
-              onClick={() => setIsLoggedIn(true)}
+              // onClick={() => setIsLoggedIn(true)}
             >
-              <span className="font-medium font-sans">Get Started</span>
+              <Link href="/signup" className="font-medium font-sans">
+                Get Started
+              </Link>
             </Button>
           </div>
         )}
