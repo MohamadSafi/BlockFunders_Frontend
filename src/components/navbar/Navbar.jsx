@@ -43,7 +43,7 @@ export function ResponsiveNavbar() {
       <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
         <Typography
           as="a"
-          href="#"
+          href="/"
           className="mr-4 ml-2 cursor-pointer py-1.5 font-medium"
         >
           <p className="text-2xl font-bold font-sans">
