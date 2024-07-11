@@ -12,14 +12,17 @@ const navListItems = [
   {
     label: "Raise Capital",
     icon: BanknotesIcon,
+    nav: "add-campaigns",
   },
   {
     label: "Browse campaigns",
     icon: MagnifyingGlassIcon,
+    nav: "browse-campaigns",
   },
   {
     label: "About us",
     icon: InformationCircleIcon,
+    nav: "/",
   },
 ];
 
@@ -27,11 +30,11 @@ export default function NavList() {
   return (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
       <NavListMenu />
-      {navListItems.map(({ label, icon }, key) => (
+      {navListItems.map(({ label, icon, nav }, key) => (
         <Typography
           key={label}
           as="a"
-          href="#"
+          href={nav}
           variant="small"
           color="gray"
           className="font-medium text-blue-gray-500"

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import {
   Navbar,
   Typography,
@@ -29,6 +29,9 @@ import {
   MagnifyingGlassIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/solid";
+import AuthContext from "@/providers/AuthContext";
+import { useRouter } from "next/navigation";
+
 const profileMenuItems = [
   {
     label: "My Profile",
@@ -53,6 +56,9 @@ const profileMenuItems = [
 ];
 
 export default function ProfileMenu({ setIsLoggedIn }) {
+  const { logout } = useContext(AuthContext);
+  const router = useRouter();
+
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -70,7 +76,7 @@ export default function ProfileMenu({ setIsLoggedIn }) {
             size="sm"
             alt="tania andrew"
             className="border border-gray-900 p-0.5"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
+            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
           />
           <ChevronDownIcon
             strokeWidth={2.5}
@@ -89,6 +95,8 @@ export default function ProfileMenu({ setIsLoggedIn }) {
               onClick={() => {
                 closeMenu();
                 if (label === "Sign Out") setIsLoggedIn(false);
+                if (label === "My Profile") router.push("/profile");
+                if (label === "Sign Out") logout();
               }}
               className={`flex items-center gap-2 rounded ${
                 isLastItem

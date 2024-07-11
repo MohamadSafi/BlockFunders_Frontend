@@ -1,58 +1,88 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Logoligo from "../../../public/imgs/logo.svg";
+import AuthContext from "@/providers/AuthContext";
 import Image from "next/image";
+import Link from "next/link";
 
-const IconSideNav = () => {
+const IconSideNav = ({ currentId }) => {
   return (
-    <div className="text-slate-100 flex">
-      <SideNav />
-      {/* <div className="w-full">
-        <div className="h-[35px] m-4 rounded border-2 border-dashed border-slate-600 bg-slate-800">
-          Hello
-        </div>
-        <div className="h-[400px] m-4 rounded border-2 border-dashed border-slate-600 bg-slate-800">
-          Hello again
-        </div>
-      </div> */}
+    <div className="text-slate-100 flex bg-white rounded-xl">
+      <SideNav selectedId={currentId} />
     </div>
   );
 };
 
-const SideNav = () => {
-  const [selected, setSelected] = useState(0);
+const SideNav = ({ selectedId }) => {
+  const [selected, setSelected] = useState(selectedId);
+  const { logout } = useContext(AuthContext);
 
   return (
     // NOTE: In prod, you'd likely set height to h-screen and fix to the viewport
-    <nav className="h-screen w-fit bg-slate-950 p-4 flex flex-col items-center gap-2">
-      <Image
-        src={Logoligo}
-        width="48"
-        height="48"
-        alt="Benefits"
-        className={"object-cover"}
-      />
+    <nav className="h-screen w-fit bg-slate-950 p-4 flex flex-col items-center justify-between">
+      <div className="flex flex-col items-center">
+        <a href="/">
+          <Image
+            src={Logoligo}
+            width="48"
+            height="48"
+            alt="Logo"
+            className={"object-cover"}
+          />
+        </a>
 
-      <NavItem
-        selected={selected === 0}
-        id={0}
-        setSelected={setSelected}
-        width={100}
-      >
-        <p>My Profile</p>
-      </NavItem>
-      <NavItem selected={selected === 1} id={1} setSelected={setSelected}>
-        <p>My Campagins</p>
-      </NavItem>
-      <NavItem selected={selected === 2} id={2} setSelected={setSelected}>
-        <p>Account Setting</p>
-      </NavItem>
-      <NavItem selected={selected === 3} id={3} setSelected={setSelected}>
-        <p>Watchlist</p>
-      </NavItem>
-      <NavItem selected={selected === 4} id={4} setSelected={setSelected}>
-        <p>Cash</p>
-      </NavItem>
+        <div className=" flex flex-col mt-8 gap-2">
+          <Link href="/profile" passHref>
+            <NavItem
+              selected={selected === 0}
+              id={0}
+              setSelected={setSelected}
+              width={100}
+            >
+              <p className="m-1 text-gray-800">My Profile</p>
+            </NavItem>
+          </Link>
+          <Link href="/profile/my-campaigns" passHref>
+            <NavItem selected={selected === 1} id={1} setSelected={setSelected}>
+              <p className="m-1 text-gray-800">My Campaigns</p>
+            </NavItem>
+          </Link>
+          <Link href="/profile/account-setting" passHref>
+            <NavItem selected={selected === 2} id={2} setSelected={setSelected}>
+              <p className="m-1 text-gray-800">Account Setting</p>
+            </NavItem>
+          </Link>
+
+          <Link href="/profile/watchlist" passHref>
+            <NavItem selected={selected === 3} id={3} setSelected={setSelected}>
+              <p className="m-1 text-gray-800">Watchlist</p>
+            </NavItem>
+          </Link>
+          <Link href="/profile/cash" passHref>
+            <NavItem selected={selected === 4} id={4} setSelected={setSelected}>
+              <p className="m-1 text-gray-800">Cash</p>
+            </NavItem>
+          </Link>
+        </div>
+      </div>
+      <div>
+        <motion.button
+          className="flex p-2 text-md bg-slate-800 hover:bg-slate-700 rounded-md transition-colors relative min-w-44 items-center justify-center"
+          onClick={() => logout()}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <span className="block relative z-10 text-white">Log out</span>
+          <AnimatePresence>
+            <motion.span
+              className="absolute inset-0 rounded-md bg-[#bf4141d6] z-0 min-w-full"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+            ></motion.span>
+          </AnimatePresence>
+        </motion.button>
+      </div>
     </nav>
   );
 };
@@ -60,7 +90,7 @@ const SideNav = () => {
 const NavItem = ({ children, selected, id, setSelected }) => {
   return (
     <motion.button
-      className="p-3 text-xl bg-slate-800 hover:bg-slate-700 rounded-md transition-colors relative"
+      className="flex p-2 text-md bg-slate-800 hover:bg-slate-700 rounded-md transition-colors relative min-w-44 items-start"
       onClick={() => setSelected(id)}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}

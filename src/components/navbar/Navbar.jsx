@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import {
   Navbar,
   Typography,
@@ -12,9 +12,12 @@ import ProfileMenu from "./ProfileMenu";
 import NavList from "./NavList";
 import { useAppwrite } from "../../providers/appwriteContext";
 import Link from "next/link";
+import AuthContext from "@/providers/AuthContext";
+import { useAccount } from "wagmi";
 
 export function ResponsiveNavbar() {
   const { account, setUser } = useAppwrite();
+  const { token } = useContext(AuthContext);
   const user = account.get();
   const [isNavOpen, setIsNavOpen] = React.useState(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
@@ -64,7 +67,7 @@ export function ResponsiveNavbar() {
           <Bars2Icon className="h-6 w-6" />
         </IconButton>
 
-        {isLoggedIn ? (
+        {token ? (
           <ProfileMenu setIsLoggedIn={setIsLoggedIn} />
         ) : (
           <div>

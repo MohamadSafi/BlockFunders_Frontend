@@ -3,7 +3,7 @@ import React from "react";
 const Container = (props) => {
   return (
     <div
-      className={`container p-8 mx-auto  ${
+      className={`container p-4 mx-auto  ${
         props.className ? props.className : ""
       }`}
     >

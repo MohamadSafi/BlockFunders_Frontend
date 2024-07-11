@@ -1,3 +1,4 @@
+// components/CampaignCard.js
 export default function CampaignCard({
   username,
   title,

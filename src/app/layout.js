@@ -1,7 +1,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import ClientThemeProvider from "../providers/ThemeProvider";
 import { AppwriteProvider } from "@/providers/appwriteContext";
+import { AuthProvider } from "@/providers/AuthContext";
+import RainbowKitProviderWrapper from "../providers/RainbowKitProvider";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -13,9 +15,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AppwriteProvider>
-          <ClientThemeProvider>{children}</ClientThemeProvider>
-        </AppwriteProvider>
+        <RainbowKitProviderWrapper>
+          <AppwriteProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </AppwriteProvider>
+        </RainbowKitProviderWrapper>
       </body>
     </html>
   );

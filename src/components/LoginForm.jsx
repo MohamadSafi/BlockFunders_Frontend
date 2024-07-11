@@ -1,24 +1,26 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Link from "next/link";
 import GoogleLoginButton from "./Custom/GoogleButton";
-
-// import { useRouter } from 'next/router';
+import axios from "axios";
+import AuthContext from "@/providers/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
+  const { login } = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
-  // const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
     if (!email || !password) {
@@ -26,10 +28,31 @@ export default function LoginForm() {
       return;
     }
 
-    // Assuming the login state is managed with a context or similar
-    // setLoginState(true); // pseudo-code, adjust to your state management approach
-    // router.push('/profile');
-    console.log(formData);
+    try {
+      const data = new FormData();
+      data.append("email", email);
+      data.append("password", password);
+      const response = await axios.post(
+        "https://block-funders.haidarjbeily.com/public/api/login",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Success:", response.data);
+      const token = response.data.token;
+      login(token);
+      router.push("/profile");
+    } catch (error) {
+      if (error.response && error.response.data) {
+        const serverMessage = error.response.data.message;
+        alert(`Login failed: ${serverMessage}`);
+      } else {
+        alert("Login failed. Please try again.");
+      }
+    }
   };
 
   return (

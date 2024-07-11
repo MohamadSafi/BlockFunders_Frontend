@@ -1,31 +1,37 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import GoogleLoginButton from "../Custom/GoogleButton";
-
-// import { useRouter } from 'next/router';
+import axios from "axios";
+import AuthContext from "@/providers/AuthContext";
 
 export default function SignUp() {
+  const router = useRouter();
+  const { login } = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     country: "",
-    phone: "",
     password: "",
     repeatPassword: "",
   });
-
-  // const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const generateUsername = (firstName) => {
+    const randomNumber = Math.floor(1000 + Math.random() * 9000);
+    return `${firstName.toLowerCase()}${randomNumber}`;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, country, phone, password, repeatPassword } = formData;
-    if (!name || !email || !country || !phone || !password || !repeatPassword) {
+    const { name, email, country, password, repeatPassword } = formData;
+    if (!name || !email || !country || !password || !repeatPassword) {
       alert("Please fill in all fields");
       return;
     }
@@ -33,12 +39,51 @@ export default function SignUp() {
       alert("Passwords do not match");
       return;
     }
-    // Assuming the login state is managed with a context or similar
-    // setLoginState(true); // pseudo-code, adjust to your state management approach
-    // router.push('/profile');
-    console.log(formData);
-  };
 
+    // Split the name into first and last name for the API
+    const nameParts = name.split(" ");
+    if (nameParts.length < 2) {
+      alert("Full Name is required!");
+      return;
+    }
+    const firstName = nameParts[0];
+    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+    const username = generateUsername(firstName);
+
+    try {
+      const data = new FormData();
+      data.append("username", username);
+      data.append("email", email);
+      data.append("first_name", firstName);
+      data.append("last_name", lastName);
+      data.append("password", password);
+      data.append("password_confirmation", repeatPassword);
+
+      const response = await axios.post(
+        "https://block-funders.haidarjbeily.com/public/api/register",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Success:", response.data);
+      const token = response.data.token;
+
+      login(token);
+      router.push("/profile");
+    } catch (error) {
+      console.error("Error:", error);
+      if (error.response && error.response.data) {
+        const serverMessage = error.response.data.message;
+        alert(`Registration failed: ${serverMessage}`);
+      } else {
+        alert("Registration failed. Please try again.");
+      }
+    }
+  };
   return (
     <div className="flex mt-16 justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -48,7 +93,7 @@ export default function SignUp() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="relative mb-6">
             <label className="flex items-center mb-2 text-gray-600 text-sm font-medium">
-              Name
+              Full Name
               <svg
                 width="7"
                 height="7"
@@ -87,7 +132,7 @@ export default function SignUp() {
                 value={formData.name}
                 onChange={handleChange}
                 className="block w-full h-11 pr-5 pl-12 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-full placeholder-gray-400 focus:outline-none"
-                placeholder="Enter Name"
+                placeholder="Enter Full Name"
               />
             </div>
           </div>
