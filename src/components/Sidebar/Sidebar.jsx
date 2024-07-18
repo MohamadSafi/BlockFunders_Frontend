@@ -47,7 +47,7 @@ const SideNav = ({ selectedId }) => {
               <p className="m-1 text-gray-800">My Campaigns</p>
             </NavItem>
           </Link>
-          <Link href="/profile/account-setting" passHref>
+          {/* <Link href="/profile/account-setting" passHref>
             <NavItem selected={selected === 2} id={2} setSelected={setSelected}>
               <p className="m-1 text-gray-800">Account Setting</p>
             </NavItem>
@@ -62,7 +62,7 @@ const SideNav = ({ selectedId }) => {
             <NavItem selected={selected === 4} id={4} setSelected={setSelected}>
               <p className="m-1 text-gray-800">Cash</p>
             </NavItem>
-          </Link>
+          </Link> */}
         </div>
       </div>
       <div>

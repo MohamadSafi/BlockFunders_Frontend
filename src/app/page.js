@@ -7,7 +7,7 @@ import { ResponsiveNavbar } from "@/components/navbar/Navbar";
 
 export default function Home() {
   return (
-    <main className="w-screen h-auto p-4">
+    <main className="w-screen h-auto p-4 bg-[#fdf0e1]">
       <ResponsiveNavbar />
       <ShuffleHero />
       <FeaturedSection />

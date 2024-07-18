@@ -3,21 +3,40 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import AuthContext from "@/providers/AuthContext";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Textarea,
+  VStack,
+  Text,
+  InputLeftElement,
+  InputGroup,
+} from "@chakra-ui/react";
+import { MdTitle, MdWork, MdAttachMoney, MdDateRange } from "react-icons/md";
 
 export default function AddCampaignForm() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     target_amount: "",
-    collected_amount: "",
-    status: "",
+    deadline: null,
+    image: null,
   });
   const { token } = useContext(AuthContext);
   const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    if (name === "image") {
+      setFormData({ ...formData, image: e.target.files[0] });
+    } else if (name === "deadline") {
+      setFormData({ ...formData, deadline: new Date(value).getTime() });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -27,8 +46,12 @@ export default function AddCampaignForm() {
     data.append("description", formData.description);
     data.append("category_id", 1);
     data.append("target_amount", formData.target_amount);
-    data.append("collected_amount", formData.collected_amount);
-    data.append("status", formData.status);
+    data.append("deadline", formData.deadline);
+    data.append("collected_amount", 0);
+    data.append("status", "draft");
+    if (formData.image) {
+      data.append("image", formData.image);
+    }
 
     try {
       const response = await axios.post(
@@ -50,87 +73,128 @@ export default function AddCampaignForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-md mx-auto mt-8 p-4 bg-white rounded-lg shadow-md"
-    >
-      <h2 className="text-2xl font-bold mb-4">Add New Campaign</h2>
-      <div className="mb-4">
-        <label htmlFor="title" className="block text-gray-700">
-          Title
-        </label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="description" className="block text-gray-700">
-          Description
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded"
-          required
-        ></textarea>
-      </div>
+    <>
+      <Box maxW="800px" mx="auto" mt="5" p="5" className="text-black">
+        <Text
+          fontSize="6xl"
+          fontWeight="bold"
+          bgGradient="linear(to-r, purple.300, blue.500)"
+          bgClip="text"
+        >
+          Add a new Campaign!
+        </Text>
+        <form
+          onSubmit={handleSubmit}
+          // className=" border-2 border-gray-700 p-8 rounded-md"
+        >
+          <VStack spacing={6} align="stretch">
+            <FormControl id="jobTitle" isRequired className="mt-8">
+              <FormLabel>Campaign Title</FormLabel>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none">
+                  <MdTitle color="gray" />
+                </InputLeftElement>
+                <Input
+                  name="title"
+                  placeholder="Enter Campaign title"
+                  onChange={handleChange}
+                  _placeholder={{ opacity: 1, color: "gray.600" }}
+                  borderColor={"gray.500"}
+                />
+              </InputGroup>
+            </FormControl>
 
-      <div className="mb-4">
-        <label htmlFor="target_amount" className="block text-gray-700">
-          Target Amount
-        </label>
-        <input
-          type="number"
-          id="target_amount"
-          name="target_amount"
-          value={formData.target_amount}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded"
-          required
+            <FormControl id="jobDescription" isRequired>
+              <FormLabel>Campaign Description</FormLabel>
+              <Textarea
+                name="description"
+                placeholder="Enter Campaign description"
+                onChange={handleChange}
+                className="min-h-44"
+                _placeholder={{ opacity: 1, color: "gray.600" }}
+                borderColor={"gray.500"}
+              />
+            </FormControl>
+
+            <FormControl id="image">
+              <FormLabel>Upload Image</FormLabel>
+              <Input
+                type="file"
+                name="image"
+                accept="image/*"
+                onChange={handleChange}
+                p={1}
+                _placeholder={{ opacity: 1, color: "gray.600" }}
+                borderColor={"gray.500"}
+              />
+            </FormControl>
+
+            <FormControl id="budget" isRequired>
+              <FormLabel>Target Amount</FormLabel>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none">
+                  <MdAttachMoney color="gray" />
+                </InputLeftElement>
+                <Input
+                  name="target_amount"
+                  type="number"
+                  placeholder="Enter Target Amount"
+                  onChange={handleChange}
+                  _placeholder={{ opacity: 1, color: "gray.600" }}
+                  borderColor={"gray.500"}
+                />
+              </InputGroup>
+            </FormControl>
+
+            <FormControl id="deadline" isRequired>
+              <FormLabel>Deadline</FormLabel>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none">
+                  <MdDateRange color="gray" />
+                </InputLeftElement>
+                <Input
+                  name="deadline"
+                  type="date"
+                  onChange={handleChange}
+                  _placeholder={{ opacity: 1, color: "gray.600" }}
+                  borderColor={"gray.500"}
+                />
+              </InputGroup>
+            </FormControl>
+
+            <Button
+              colorScheme="teal"
+              size="lg"
+              type="submit"
+              bg={"#3a82d0"}
+              sx={{
+                "&:hover": {
+                  bg: "#135fb0",
+                },
+                "&:focus": {
+                  bg: "#135fb0",
+                },
+              }}
+            >
+              Post Campaign
+            </Button>
+          </VStack>
+        </form>
+      </Box>
+      <Box position="absolute" top="5%" left="5px" width={"20%"} zIndex={-10}>
+        <img
+          src="./imgs/addForm/first.svg"
+          alt="Your SVG"
+          style={{ width: "100%", height: "100%" }}
         />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="collected_amount" className="block text-gray-700">
-          Collected Amount
-        </label>
-        <input
-          type="number"
-          id="collected_amount"
-          name="collected_amount"
-          value={formData.collected_amount}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded"
-          required
+      </Box>
+      <Box position="absolute" top="37%" right="5px" width={"20%"} zIndex={-10}>
+        <img
+          src="./imgs/addForm/second.svg"
+          alt="Your SVG"
+          style={{ width: "100%", height: "100%" }}
         />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="status" className="block text-gray-700">
-          Status
-        </label>
-        <input
-          type="text"
-          id="status"
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded"
-          required
-        />
-      </div>
-      <button
-        type="submit"
-        className="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700"
-      >
-        Add Campaign
-      </button>
-    </form>
+      </Box>
+    </>
   );
 }

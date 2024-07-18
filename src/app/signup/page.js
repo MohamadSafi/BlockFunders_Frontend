@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="w-screen h-auto p-4">
+    <main className="w-screen h-auto p-4 bg-[#fdf0e1]">
       <div className="flex justify-center mt-12">
         <Link
           href="/"

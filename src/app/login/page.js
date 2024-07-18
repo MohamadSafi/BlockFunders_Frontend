@@ -1,11 +1,13 @@
 import Footer from "@/components/Footer/Footer";
 import LoginForm from "@/components/LoginForm";
+import { ResponsiveNavbar } from "@/components/navbar/Navbar";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="w-screen h-auto">
-      <div className="flex justify-center mt-12">
+    <main className="w-screen h-auto bg-[#fdf0e1]">
+      <ResponsiveNavbar />
+      <div className="flex justify-center mt-12 bg-[#fdf0e1]">
         <Link
           href="/"
           className="flex items-center space-x-2 text-2xl font-medium"

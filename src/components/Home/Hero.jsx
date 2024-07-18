@@ -1,8 +1,12 @@
 "use client";
 import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
+import Link from "next/link";
+import AuthContext from "@/providers/AuthContext";
 
 const ShuffleHero = () => {
+  const { token } = useContext(AuthContext);
+
   return (
     <div className="h-[70vh] mx-36 flex items-center">
       <section className="w-full px-2 grid grid-cols-1 md:grid-cols-2 items-center gap-8 max-w-auto mx-auto">
@@ -18,7 +22,15 @@ const ShuffleHero = () => {
             blockchain for secure, transparent, and global crowdfunding.
           </p>
           <button className="bg-[#65b2f0] text-white font-medium py-2 px-4 rounded transition-all hover:bg-[#3994de] active:scale-95">
-            Start Now
+            {token ? (
+              <Link href="/add-campaigns" className="font-medium font-sans">
+                Add Campaign
+              </Link>
+            ) : (
+              <Link href="/signup" className="font-medium font-sans">
+                Start Now
+              </Link>
+            )}
           </button>
         </div>
         <ShuffleGrid />

@@ -82,8 +82,8 @@ export default function FeaturedSection() {
             </p>
           </div>
         </div>
-        <div className=" pb-12 mt-10  sm:pb-16">
-          <div className="relative">
+        {/* <div className=" pb-12 mt-10  sm:pb-16"> */}
+        {/* <div className="relative">
             <div className="absolute inset-0 h-1/2 "></div>
             <div className="relative max-w-screen-xl px-4 mx-auto sm:px-6 lg:px-8">
               <div className="max-w-4xl mx-auto" ref={sectionRef}>
@@ -128,8 +128,8 @@ export default function FeaturedSection() {
                 </dl>
               </div>
             </div>
-          </div>
-        </div>
+          </div> */}
+        {/* </div> */}
         <div className="mx-16">
           <CampaignCarousel />
         </div>

@@ -1,6 +1,5 @@
-import { useRouter } from "next/navigation";
-
-export default function CampaignCard({
+// components/CampaignCard.js
+export default function ProfileCampaignCard({
   firstName,
   lastName,
   title,
@@ -11,14 +10,7 @@ export default function CampaignCard({
   img,
   profileImg,
   profile = false,
-  id, // Add id prop
 }) {
-  const router = useRouter();
-
-  const handleClick = () => {
-    router.push(`/campaign/${id}`); // Navigate to the campaign route with the id
-  };
-
   const truncateText = (text, maxLength) => {
     if (text.length <= maxLength) {
       return text;
@@ -27,10 +19,7 @@ export default function CampaignCard({
   };
 
   return (
-    <div
-      onClick={handleClick}
-      className="bg-white rounded-2xl h-96 p-4 shadow-xl w-full cursor-pointer"
-    >
+    <div className="bg-white rounded-2xl h-96 p-4 shadow-xl w-full">
       <img
         src={img}
         alt="Campaign"

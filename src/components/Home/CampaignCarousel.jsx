@@ -47,40 +47,49 @@ const CampaignCarousel = () => {
         <div className="p-4">
           <CampaignCard
             username={"Sam whinchester"}
+            firstName={"Sam"}
+            lastName={"whinchester"}
             title={"Lance | O₂ – Light & Smart | Built in Titanium"}
             desc={
               "Designed on Earth, used in space. Titanium, almost imperceptible. Wearing them feels as natural as breathing."
             }
-            days={"20"}
-            funded={"40"}
+            days={20}
+            funded={40}
             img={"imgs/home/camp1.png"}
             profileImg={"imgs/home/profile2.png"}
+            target_amount={1500}
           />
         </div>
         <div className="p-4">
           <CampaignCard
             username={"Dean whinchester"}
+            firstName={"Dean"}
+            lastName={"whinchester"}
             title={"NLT SonRise Edition Bible"}
             desc={
               "A beautifully designed Bible that's handbound with full-grain leather."
             }
-            days={"25"}
-            funded={"10"}
+            days={25}
+            funded={10}
             img={"imgs/home/camp2.png"}
             profileImg={"imgs/home/profile1.png"}
+            target_amount={3000}
           />
         </div>
         <div className="p-4">
           <CampaignCard
             username={"Zack sniper"}
+            firstName={"Zack"}
+            lastName={"sniper"}
             title={"The Lord of the Rings Playing Cards Vol. 3"}
             desc={
               "Officially Licensed playing cards inspired by The Lord of the Rings™, The Return of the King"
             }
             days={"2"}
-            funded={"90"}
+            funded={90}
             img={"imgs/home/camp3.png"}
             profileImg={"imgs/home/profile.png"}
+            target_amount={20000}
           />
         </div>
       </Slider>

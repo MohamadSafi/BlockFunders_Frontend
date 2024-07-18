@@ -10,15 +10,15 @@ import {
 import { Bars2Icon } from "@heroicons/react/24/solid";
 import ProfileMenu from "./ProfileMenu";
 import NavList from "./NavList";
-import { useAppwrite } from "../../providers/appwriteContext";
+// import { useAppwrite } from "../../providers/appwriteContext";
 import Link from "next/link";
 import AuthContext from "@/providers/AuthContext";
 import { useAccount } from "wagmi";
 
 export function ResponsiveNavbar() {
-  const { account, setUser } = useAppwrite();
+  // const { account, setUser } = useAppwrite();
   const { token } = useContext(AuthContext);
-  const user = account.get();
+  // const user = account.get();
   const [isNavOpen, setIsNavOpen] = React.useState(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);

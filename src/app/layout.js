@@ -1,8 +1,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AppwriteProvider } from "@/providers/appwriteContext";
+// import { AppwriteProvider } from "@/providers/appwriteContext";
 import { AuthProvider } from "@/providers/AuthContext";
 import RainbowKitProviderWrapper from "../providers/RainbowKitProvider";
+import { ChakraProvider } from "@chakra-ui/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,9 +17,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <RainbowKitProviderWrapper>
-          <AppwriteProvider>
+          {/* <AppwriteProvider> */}
+          <ChakraProvider>
             <AuthProvider>{children}</AuthProvider>
-          </AppwriteProvider>
+          </ChakraProvider>
+          {/* </AppwriteProvider> */}
         </RainbowKitProviderWrapper>
       </body>
     </html>

@@ -18,9 +18,10 @@ import {
 } from "mdb-react-ui-kit";
 import AuthContext from "@/providers/AuthContext";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import Loader from "@/components/Custom/BarLoader";
 
 export default function Home() {
   const { token } = useContext(AuthContext);
@@ -43,13 +44,14 @@ export default function Home() {
             },
           }
         )
-        .then((response) => {
+        .then(async (response) => {
           setusername(response.data.username);
           setFirstName(response.data.first_name);
           setLastName(response.data.last_name);
           setEmail(response.data.email);
           setImageUrl(response.data.profile_picture);
           setIsLoading(false);
+          await AsyncStorage.setItem("userId", response.data.id.toString());
         })
         .catch((error) => {
           console.error("Error fetching profile:", error);
@@ -61,7 +63,7 @@ export default function Home() {
     <main className="flex w-screen h-auto bg-[#f6f0eb]">
       <IconSideNav currentId={0} />
       {isLoading ? (
-        <div className="loader">Loading...</div> // Your loader component or element
+        <Loader />
       ) : (
         <div className="w-full bg-[#f6f0eb]">
           <MDBContainer className="py-5 w-full">
