@@ -168,14 +168,14 @@ export default function Camp({
             fontSize={"xl"}
             className="leading-10"
           >
-            ${(funded * ethPriceInUsd).toFixed(2)}
+            ETH {(funded * ethPriceInUsd).toFixed(2)}
             <span className="font-sans text-xs text-gray-700">
               {" "}
-              raised of ${target_amount.toFixed(2)}
+              raised of {target_amount.toFixed(2)} eth
             </span>
           </Text>
           <Progress
-            value={((funded * ethPriceInUsd) / target_amount) * 100}
+            value={(funded / target_amount) * 100}
             colorScheme="green"
             borderRadius={10}
           />

@@ -49,7 +49,7 @@ export default function ProfileCampaignCard({
         </div>
         <div className="flex justify-between mt-2">
           <span className="text-sm font-semibold">
-            {funded.toFixed(2)}% from {target_amount}$
+            {funded.toFixed(2)}% from {target_amount} ETH
           </span>
           <span className="text-sm text-gray-600">{days} days left</span>
         </div>

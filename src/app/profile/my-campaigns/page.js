@@ -59,6 +59,12 @@ export default function Home() {
     getCamps();
   }, [token]);
 
+  const calculateDaysLeft = (deadline) => {
+    const now = new Date().getTime();
+    const timeLeft = deadline - now;
+    return Math.ceil(timeLeft / (1000 * 60 * 60 * 24));
+  };
+
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
     if (newFilter === "all") {
@@ -188,7 +194,7 @@ export default function Home() {
                         lastName={campaign.user.last_name}
                         title={campaign.title}
                         desc={campaign.description}
-                        days={campaign.days_left}
+                        days={calculateDaysLeft(campaign.deadline)}
                         funded={
                           (campaign.collected_amount / campaign.target_amount) *
                           100

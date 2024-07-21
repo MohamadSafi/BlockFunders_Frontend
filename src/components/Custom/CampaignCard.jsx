@@ -49,7 +49,7 @@ export default function CampaignCard({
 
       <h3 className="mt-4 text-xl font-bold">{title}</h3>
       <p className="mt-2 text-gray-600">
-        {profile ? truncateText(desc, 40) : desc}
+        {profile ? truncateText(desc, 40) : truncateText(desc, 130)}
       </p>
       <div className="mt-4">
         <div className="h-2 bg-gray-200 rounded-full">
@@ -60,7 +60,7 @@ export default function CampaignCard({
         </div>
         <div className="flex justify-between mt-2">
           <span className="text-sm font-semibold">
-            {funded.toFixed(2)}% from {target_amount}$
+            {funded.toFixed(2)}% from {target_amount} ETH
           </span>
           <span className="text-sm text-gray-600">{days} days left</span>
         </div>

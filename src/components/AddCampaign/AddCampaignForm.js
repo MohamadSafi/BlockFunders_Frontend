@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import AuthContext from "@/providers/AuthContext";
@@ -15,9 +15,18 @@ import {
   InputLeftElement,
   InputGroup,
 } from "@chakra-ui/react";
-import { MdTitle, MdWork, MdAttachMoney, MdDateRange } from "react-icons/md";
+import {
+  MdTitle,
+  MdWork,
+  MdOutlineCurrencyBitcoin,
+  MdDateRange,
+} from "react-icons/md";
+import { fetchEthPriceInUsd } from "@/utils/ethToUsd";
 
 export default function AddCampaignForm() {
+  const [ethPriceInUsd, setEthPriceInUsd] = useState(0);
+  const [usdEquivalent, setUsdEquivalent] = useState(0);
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -27,6 +36,22 @@ export default function AddCampaignForm() {
   });
   const { token } = useContext(AuthContext);
   const router = useRouter();
+
+  useEffect(() => {
+    const getEthPrice = async () => {
+      const price = await fetchEthPriceInUsd();
+      if (price !== null) {
+        setEthPriceInUsd(price);
+      }
+    };
+    getEthPrice();
+  }, []);
+
+  const handleTargetAmountChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setUsdEquivalent(value * ethPriceInUsd);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -130,20 +155,23 @@ export default function AddCampaignForm() {
             </FormControl>
 
             <FormControl id="budget" isRequired>
-              <FormLabel>Target Amount</FormLabel>
+              <FormLabel>Target Amount in ETH</FormLabel>
               <InputGroup>
                 <InputLeftElement pointerEvents="none">
-                  <MdAttachMoney color="gray" />
+                  <MdOutlineCurrencyBitcoin color="gray" />
                 </InputLeftElement>
                 <Input
                   name="target_amount"
                   type="number"
                   placeholder="Enter Target Amount"
-                  onChange={handleChange}
+                  onChange={handleTargetAmountChange}
                   _placeholder={{ opacity: 1, color: "gray.600" }}
                   borderColor={"gray.500"}
                 />
               </InputGroup>
+              <Text mt={2} className="text-gray-800">
+                ~${usdEquivalent.toFixed(2)} USD
+              </Text>
             </FormControl>
 
             <FormControl id="deadline" isRequired>

@@ -145,7 +145,7 @@ export default function Home() {
                   color={filter === "draft" ? "primary" : "secondary"}
                   onClick={() => handleFilterChange("ready")}
                 >
-                  To Claime
+                  To Claim
                 </MDBBtn>
                 <MDBBtn
                   color={filter === "published" ? "primary" : "secondary"}

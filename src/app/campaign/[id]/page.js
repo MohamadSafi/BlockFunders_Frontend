@@ -18,7 +18,7 @@ export default function CampaignPage({ params }) {
   const calculateDaysLeft = (deadline) => {
     const now = new Date().getTime();
     const timeLeft = deadline - now;
-    return Math.ceil(timeLeft / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+    return Math.ceil(timeLeft / (1000 * 60 * 60 * 24));
   };
 
   useEffect(() => {
