@@ -9,7 +9,7 @@ export const AppwriteProvider = ({ children }) => {
     () =>
       new Client()
         .setEndpoint("https://cloud.appwrite.io/v1") // Your Appwrite API Endpoint
-        .setProject("668574090033e660a227"),
+        .setProject("XXXXXXXXXXXXXXX"),
     []
   ); // Your Appwrite Project ID
 

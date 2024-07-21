@@ -2,7 +2,6 @@
 import React, { useState, useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-// import GoogleLoginButton from "../Custom/GoogleButton";
 import axios from "axios";
 import AuthContext from "@/providers/AuthContext";
 
@@ -324,7 +323,6 @@ export default function SignUp() {
           </div>
           <p className="text-sm text-gray-600 text-center">or</p>
         </form>
-        {/* <GoogleLoginButton /> */}
 
         <div className="flex justify-center">
           <span className="ml-2 text-sm text-gray-600">

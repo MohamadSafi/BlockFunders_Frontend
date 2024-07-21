@@ -9,7 +9,7 @@ const queryClient = new QueryClient();
 
 const config = getDefaultConfig({
   appName: "BlockFunders",
-  projectId: "ba131fb4d872ba740ed69f09be3605e9",
+  projectId: process.env.WALLET_CONNECT_PROJECT_ID,
   chains: [arbitrumSepolia],
   ssr: true,
 });

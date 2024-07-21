@@ -103,10 +103,10 @@ export default function Home() {
   }, [hash, MintNFT, mintedId]);
 
   async function publish({ owner, id, uri }) {
-    setMintedId(id - 1);
+    setMintedId(id);
 
     writeContract({
-      address: "0x8eccfeF7f3A327483D6405B10Be87C2B31F76f6d",
+      address: "0x1634F2866E3a561f12aF62A8297D20E61a5058f2",
       abi: nftABI,
       functionName: "mint",
       args: [owner, id, uri],
@@ -191,10 +191,8 @@ export default function Home() {
                                 onClick={() =>
                                   publish({
                                     owner: address,
-                                    id: reward.id + 1,
-                                    uri: `https://block-funders.haidarjbeily.com/public/api/nft_metadata/${
-                                      reward.id + 1
-                                    }`,
+                                    id: reward.id,
+                                    uri: `https://block-funders.haidarjbeily.com/public/api/nft_metadata/${reward.id}`,
                                   })
                                 }
                               >

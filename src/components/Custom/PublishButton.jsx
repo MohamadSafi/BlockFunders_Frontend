@@ -15,7 +15,7 @@ export default function PublishButton({
 
   async function publish() {
     writeContract({
-      address: "0x785371Bcf0f3629D5D58b6f801af981696e08a85",
+      address: "0xf891cDD558eBfbd9Ea9e4B14B34f42CC13e51a10",
       abi: contractABI,
       functionName: "createCampaign",
       args: [owner, title, description, targetMoney, deadline, imageUrl],

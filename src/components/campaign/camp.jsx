@@ -86,7 +86,7 @@ export default function Camp({
           }
         );
         console.log(response);
-        setIsThankYouVisible(true); // Show the thank you message
+        setIsThankYouVisible(true);
       } catch (error) {
         console.error("Error:", error);
       }
@@ -102,11 +102,11 @@ export default function Camp({
 
   const handleDonation = () => {
     const donationAmountInWei = BigInt(donationAmount * 10 ** 18);
-    const numberId = Number(id) - 3;
+    const numberId = Number(id);
     console.log(numberId);
     console.log(typeof numberId);
     writeContract({
-      address: "0x785371Bcf0f3629D5D58b6f801af981696e08a85",
+      address: "0xf891cDD558eBfbd9Ea9e4B14B34f42CC13e51a10",
       abi: contractABI,
       functionName: "donateToCampaign",
       args: [numberId],
