@@ -19,6 +19,7 @@ import { useAccount } from "wagmi";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { contractABI } from "../../../../public/contractABI/contractABI";
 import ProfileCampaignCard from "@/components/Custom/profileCampainCard";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { token } = useContext(AuthContext);
@@ -30,6 +31,7 @@ export default function Home() {
   const [filter, setFilter] = useState("all");
   const { data: hash, error, isPending, writeContract } = useWriteContract();
   const [publishedCampaignIds, setPublishedCampaignIds] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const getCamps = async () => {
@@ -109,8 +111,9 @@ export default function Home() {
   useEffect(() => {
     if (hash) {
       publishCampaign(publishedId);
+      router.refresh();
     }
-  }, [hash, publishCampaign, publishedId]);
+  }, [hash, publishCampaign, publishedId, router]);
 
   async function publish({
     id,

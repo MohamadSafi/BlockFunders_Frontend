@@ -96,7 +96,7 @@ export default function RewardPage({ params }) {
                   metadata.attributes.map((attr, index) => (
                     <Box key={index} mb={4}>
                       <Text fontWeight="bold">{attr.trait_type}:</Text>
-                      <Text className="text-gray-900">{attr.value}</Text>
+                      <Text className="text-gray-900">{attr.trait_value}</Text>
                     </Box>
                   ))
                 ) : (

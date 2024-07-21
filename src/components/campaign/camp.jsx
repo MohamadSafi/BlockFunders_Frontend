@@ -25,6 +25,7 @@ import AuthContext from "@/providers/AuthContext";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { contractABI } from "../../../public/contractABI/contractABI";
 import { fetchEthPriceInUsd } from "@/utils/ethToUsd";
+import { useRouter } from "next/navigation";
 
 export default function Camp({
   firstName,
@@ -47,6 +48,7 @@ export default function Camp({
   const [isThankYouVisible, setIsThankYouVisible] = useState(false);
   const [ethPriceInUsd, setEthPriceInUsd] = useState(0);
   const [usdEquivalent, setUsdEquivalent] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     const getEthPrice = async () => {
@@ -86,7 +88,8 @@ export default function Camp({
           }
         );
         console.log(response);
-        setIsThankYouVisible(true);
+        // setIsThankYouVisible(true);router. refresh()
+        // router. refresh()
       } catch (error) {
         console.error("Error:", error);
       }
@@ -97,8 +100,9 @@ export default function Camp({
   useEffect(() => {
     if (hash) {
       submitDonate(id);
+      router.refresh();
     }
-  }, [hash, submitDonate, id]);
+  }, [hash, submitDonate, id, router]);
 
   const handleDonation = () => {
     const donationAmountInWei = BigInt(donationAmount * 10 ** 18);

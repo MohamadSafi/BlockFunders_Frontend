@@ -19,6 +19,7 @@ import { useAccount } from "wagmi";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { nftABI } from "../../../../public/contractABI/NFT_ABI";
 import RewardCard from "@/components/Custom/rewardCard";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { token } = useContext(AuthContext);
@@ -30,6 +31,7 @@ export default function Home() {
   const [filter, setFilter] = useState("all");
   const { data: hash, error, isPending, writeContract } = useWriteContract();
   const [publishedRewardIds, setPublishedRewardIds] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const getRewards = async () => {
@@ -99,8 +101,9 @@ export default function Home() {
   useEffect(() => {
     if (hash) {
       MintNFT(mintedId);
+      router.refresh();
     }
-  }, [hash, MintNFT, mintedId]);
+  }, [hash, MintNFT, mintedId, router]);
 
   async function publish({ owner, id, uri }) {
     setMintedId(id);
