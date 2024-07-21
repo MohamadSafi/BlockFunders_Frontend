@@ -98,9 +98,7 @@ export default function Campaigns() {
                 desc={campaign.description}
                 days={calculateDaysLeft(campaign.deadline)}
                 funded={
-                  ((campaign.collected_amount * ethPriceInUsd) /
-                    campaign.target_amount) *
-                  100
+                  (campaign.collected_amount / campaign.target_amount) * 100
                 }
                 target_amount={campaign.target_amount}
                 img={`https://block-funders.haidarjbeily.com/public/storage/${campaign.image}`}
