@@ -1,5 +1,6 @@
 // contractABI.js
 export const contractABI = [
+  { inputs: [], name: "CampaignAlreadyCreated", type: "error" },
   { inputs: [], name: "CampaignNotFound", type: "error" },
   { inputs: [], name: "DeadlineInvalid", type: "error" },
   { inputs: [], name: "DonationFailed", type: "error" },
@@ -90,6 +91,7 @@ export const contractABI = [
   },
   {
     inputs: [
+      { internalType: "uint256", name: "_campaignId", type: "uint256" },
       { internalType: "address", name: "_owner", type: "address" },
       { internalType: "string", name: "_title", type: "string" },
       { internalType: "string", name: "_description", type: "string" },
@@ -110,26 +112,9 @@ export const contractABI = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getCampaigns",
-    outputs: [
-      {
-        components: [
-          { internalType: "address", name: "owner", type: "address" },
-          { internalType: "string", name: "title", type: "string" },
-          { internalType: "string", name: "description", type: "string" },
-          { internalType: "uint256", name: "targetMoney", type: "uint256" },
-          { internalType: "uint256", name: "deadline", type: "uint256" },
-          { internalType: "uint256", name: "amountCollected", type: "uint256" },
-          { internalType: "string", name: "imageUrl", type: "string" },
-          { internalType: "address[]", name: "donators", type: "address[]" },
-          { internalType: "uint256[]", name: "donations", type: "uint256[]" },
-        ],
-        internalType: "struct BlockFunders.Campaign[]",
-        name: "",
-        type: "tuple[]",
-      },
-    ],
+    inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "exists",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
     stateMutability: "view",
     type: "function",
   },
