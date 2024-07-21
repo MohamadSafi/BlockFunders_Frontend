@@ -168,7 +168,7 @@ export default function Camp({
             fontSize={"xl"}
             className="leading-10"
           >
-            ETH {(funded * ethPriceInUsd).toFixed(2)}
+            ETH {funded.toFixed(2)}
             <span className="font-sans text-xs text-gray-700">
               {" "}
               raised of {target_amount.toFixed(2)} eth
