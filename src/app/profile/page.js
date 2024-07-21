@@ -63,7 +63,7 @@ export default function Home() {
   }, [token]);
 
   const recentTransactions = transactions
-    .filter((transaction) => Number(transaction.amount) > 0)
+    .filter((transaction) => Number(transaction.amount) >= 0)
     .slice(-5)
     .reverse();
 
