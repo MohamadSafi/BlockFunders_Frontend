@@ -171,9 +171,9 @@ export default function Home() {
 
                 <MDBCard className="mb-4">
                   <MDBCardBody className="p-0">
-                    <MDBListGroup flush className="rounded-3">
+                    <MDBListGroup flush className="rounded-3 min-h-44">
                       {recentTransactions.length === 0 ? (
-                        <Text>No donations yet.</Text>
+                        <Text m={4}>No Transactions yet....</Text>
                       ) : (
                         recentTransactions.map((transaction) => (
                           <MDBListGroupItem
