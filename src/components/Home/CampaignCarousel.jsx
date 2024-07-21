@@ -13,6 +13,12 @@ const CampaignCarousel = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [ethPriceInUsd, setEthPriceInUsd] = useState(0);
 
+  const calculateDaysLeft = (deadline) => {
+    const now = new Date().getTime();
+    const timeLeft = deadline - now;
+    return Math.ceil(timeLeft / (1000 * 60 * 60 * 24));
+  };
+
   useEffect(() => {
     const getEthPrice = async () => {
       const price = await fetchEthPriceInUsd();
@@ -92,7 +98,7 @@ const CampaignCarousel = () => {
               lastName={campaign.user.last_name}
               title={campaign.title}
               desc={campaign.description}
-              days={campaign.days_left}
+              days={calculateDaysLeft(campaign.deadline)}
               funded={
                 (campaign.collected_amount / campaign.target_amount) * 100
               }
@@ -100,6 +106,7 @@ const CampaignCarousel = () => {
               profileImg={campaign.user.profile_picture}
               target_amount={campaign.target_amount}
               ethPrice={ethPriceInUsd}
+              profile={true}
             />
           </div>
         ))}
