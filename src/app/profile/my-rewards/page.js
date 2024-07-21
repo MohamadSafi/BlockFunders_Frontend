@@ -17,71 +17,67 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
-import { contractABI } from "../../../../public/contractABI/contractABI";
-import ProfileCampaignCard from "@/components/Custom/profileCampainCard";
+import { nftABI } from "../../../../public/contractABI/NFT_ABI";
+import RewardCard from "@/components/Custom/rewardCard";
 
 export default function Home() {
   const { token } = useContext(AuthContext);
   const { address, isConnected } = useAccount();
-  const [campaigns, setCampaigns] = useState([]);
-  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
+  const [rewards, setRewards] = useState([]);
+  const [filteredRewards, setFilteredRewards] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [publishedId, setPublishedId] = useState(null);
+  const [mintedId, setMintedId] = useState(null);
   const [filter, setFilter] = useState("all");
   const { data: hash, error, isPending, writeContract } = useWriteContract();
-  const [publishedCampaignIds, setPublishedCampaignIds] = useState([]);
+  const [publishedRewardIds, setPublishedRewardIds] = useState([]);
 
   useEffect(() => {
-    const getCamps = async () => {
+    const getRewards = async () => {
       if (token) {
-        const id = localStorage.getItem("userId");
         axios
-          .get("https://block-funders.haidarjbeily.com/public/api/campaigns", {
+          .get("https://block-funders.haidarjbeily.com/public/api/claims", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
             params: {
               with_paginate: 0,
-              user_id: id,
             },
           })
           .then((response) => {
-            setCampaigns(response.data.data);
-            setFilteredCampaigns(response.data.data); // Set the filtered campaigns initially to all campaigns
+            console.log("Response", response);
+            setRewards(response.data);
+            setFilteredRewards(response.data);
             setIsLoading(false);
           })
           .catch((error) => {
-            console.error("Error fetching campaigns:", error);
+            console.error("Error fetching rewards:", error);
             setIsLoading(false);
           });
       }
     };
-    getCamps();
+    getRewards();
   }, [token]);
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
     if (newFilter === "all") {
-      setFilteredCampaigns(campaigns);
+      setFilteredRewards(rewards);
     } else {
-      setFilteredCampaigns(
-        campaigns.filter((campaign) => campaign.status === newFilter)
+      setFilteredRewards(
+        rewards.filter((rewards) => rewards.status === newFilter)
       );
     }
   };
 
-  console.log(campaigns);
-
-  const publishCampaign = useCallback(
+  const MintNFT = useCallback(
     async (id) => {
-      console.log("I am inside the callback");
       const formData = new FormData();
       formData.append("tx_hash", hash);
       formData.append("_method", "PUT");
       console.log(hash);
       try {
         const response = await axios.post(
-          `https://block-funders.haidarjbeily.com/public/api/campaigns/${id}`,
+          `https://block-funders.haidarjbeily.com/public/api/claims/${id}`,
           formData,
           {
             headers: {
@@ -91,8 +87,8 @@ export default function Home() {
           }
         );
         console.log(response);
-        setPublishedCampaignIds((prev) => [...prev, id]);
-        alert(`Campaign published successfully! Transaction Hash: ${hash}`);
+        setPublishedRewardIds((prev) => [...prev, id]);
+        alert(`NFT reward claimed successfully! Transaction Hash: ${hash}`);
       } catch (error) {
         console.error("Error publishing campaign:", error);
       }
@@ -102,31 +98,24 @@ export default function Home() {
 
   useEffect(() => {
     if (hash) {
-      publishCampaign(publishedId);
+      MintNFT(mintedId);
     }
-  }, [hash, publishCampaign, publishedId]);
+  }, [hash, MintNFT, mintedId]);
 
-  async function publish({
-    id,
-    owner,
-    title,
-    description,
-    targetMoney,
-    deadline,
-    imageUrl,
-  }) {
-    setPublishedId(id);
+  async function publish({ owner, id, uri }) {
+    setMintedId(id - 1);
+
     writeContract({
-      address: "0x785371Bcf0f3629D5D58b6f801af981696e08a85",
-      abi: contractABI,
-      functionName: "createCampaign",
-      args: [owner, title, description, targetMoney, deadline, imageUrl],
+      address: "0x8eccfeF7f3A327483D6405B10Be87C2B31F76f6d",
+      abi: nftABI,
+      functionName: "mint",
+      args: [owner, id, uri],
     });
   }
 
   return (
     <main className="flex w-screen h-auto bg-[#f6f0eb]">
-      <IconSideNav currentId={1} />
+      <IconSideNav currentId={2} />
       <div className="w-full bg-[#f6f0eb]">
         <MDBContainer className="py-5 w-full">
           <MDBRow>
@@ -138,7 +127,7 @@ export default function Home() {
                 <MDBBreadcrumbItem>
                   <a href="#">User</a>
                 </MDBBreadcrumbItem>
-                <MDBBreadcrumbItem active>My Campaigns</MDBBreadcrumbItem>
+                <MDBBreadcrumbItem active>My Rewards</MDBBreadcrumbItem>
               </MDBBreadcrumb>
             </MDBCol>
           </MDBRow>
@@ -154,15 +143,15 @@ export default function Home() {
                 </MDBBtn>
                 <MDBBtn
                   color={filter === "draft" ? "primary" : "secondary"}
-                  onClick={() => handleFilterChange("draft")}
+                  onClick={() => handleFilterChange("ready")}
                 >
-                  Draft
+                  To Claime
                 </MDBBtn>
                 <MDBBtn
                   color={filter === "published" ? "primary" : "secondary"}
-                  onClick={() => handleFilterChange("published")}
+                  onClick={() => handleFilterChange("claimed")}
                 >
-                  Published
+                  Claimed
                 </MDBBtn>
               </MDBBtnGroup>
             </MDBCol>
@@ -172,63 +161,51 @@ export default function Home() {
             <MDBCol lg="12">
               {isLoading ? (
                 <p>Loading...</p>
-              ) : filteredCampaigns.length === 0 ? (
-                <p>Currently you dont have any campaigns here.</p>
+              ) : filteredRewards.length === 0 ? (
+                <p>Currently you dont have any Rewards here.</p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {filteredCampaigns.map((campaign) => (
+                  {filteredRewards.map((reward) => (
                     <div
-                      key={campaign.id}
+                      key={reward.id}
                       className="flex gap-2 flex-col items-center "
                     >
-                      <ProfileCampaignCard
-                        profile={true}
-                        key={campaign.id}
-                        firstName={campaign.user.first_name}
-                        lastName={campaign.user.last_name}
-                        title={campaign.title}
-                        desc={campaign.description}
-                        days={campaign.days_left}
-                        funded={
-                          (campaign.collected_amount / campaign.target_amount) *
-                          100
-                        }
-                        target_amount={campaign.target_amount}
-                        img={`https://block-funders.haidarjbeily.com/public/storage/${campaign.image}`}
-                        profileImg={"/imgs/home/profile1.png"}
+                      <RewardCard
+                        name={reward.metadata.name}
+                        desc={reward.metadata.description}
+                        dna={reward.metadata.dna}
+                        img={reward.metadata.image}
+                        status={reward.status}
+                        id={reward.id}
                       />
-                      {campaign.status === "draft" &&
+                      {reward.status === "ready" &&
                         (isConnected ? (
                           <>
-                            {!publishedCampaignIds.includes(campaign.id) && (
+                            {!publishedRewardIds.includes(reward.id) && (
                               <Button
                                 colorScheme="green"
                                 className="w-full"
-                                isLoading={
-                                  isPending && publishedId === campaign.id
-                                }
-                                loadingText="Publishing"
+                                isLoading={isPending && mintedId === reward.id}
+                                loadingText="Claiming.."
                                 spinnerPlacement="start"
                                 onClick={() =>
                                   publish({
-                                    id: campaign.id,
                                     owner: address,
-                                    title: campaign.title,
-                                    description: campaign.description,
-                                    targetMoney: Number(campaign.target_amount),
-                                    deadline: campaign.deadline,
-                                    imageUrl: `https://block-funders.haidarjbeily.com/public/storage/${campaign.image}`,
+                                    id: reward.id + 1,
+                                    uri: `https://block-funders.haidarjbeily.com/public/api/nft_metadata/${
+                                      reward.id + 1
+                                    }`,
                                   })
                                 }
                               >
-                                Publish
+                                Claim Your NFT
                               </Button>
                             )}
-                            {/* {error && (
+                            {error && (
                               <div>
                                 Error: {error.shortMessage || error.message}
                               </div>
-                            )} */}
+                            )}
                           </>
                         ) : (
                           <ConnectButton label="Connect Wallet to Publish" />

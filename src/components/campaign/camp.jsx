@@ -24,6 +24,7 @@ import axios from "axios";
 import AuthContext from "@/providers/AuthContext";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { contractABI } from "../../../public/contractABI/contractABI";
+import { fetchEthPriceInUsd } from "@/utils/ethToUsd";
 
 export default function Camp({
   firstName,
@@ -43,7 +44,19 @@ export default function Camp({
   const { data: hash, error, isPending, writeContract } = useWriteContract();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [donationAmount, setDonationAmount] = useState("");
-  const [isThankYouVisible, setIsThankYouVisible] = useState(true);
+  const [isThankYouVisible, setIsThankYouVisible] = useState(false);
+  const [ethPriceInUsd, setEthPriceInUsd] = useState(0);
+  const [usdEquivalent, setUsdEquivalent] = useState(0);
+
+  useEffect(() => {
+    const getEthPrice = async () => {
+      const price = await fetchEthPriceInUsd();
+      if (price !== null) {
+        setEthPriceInUsd(price);
+      }
+    };
+    getEthPrice();
+  }, []);
 
   const formatTransactionLink = (link) => {
     const parts = link.split("/");
@@ -103,10 +116,17 @@ export default function Camp({
     });
   };
 
+  const handleDonationAmountChange = (e) => {
+    const amount = e.target.value;
+    setDonationAmount(amount);
+    setUsdEquivalent(amount * ethPriceInUsd);
+  };
+
   const closeModal = () => {
     onClose();
     setIsThankYouVisible(false); // Reset thank you message visibility
     setDonationAmount(""); // Reset donation amount
+    setUsdEquivalent(0); // Reset USD equivalent
   };
 
   return (
@@ -148,14 +168,14 @@ export default function Camp({
             fontSize={"xl"}
             className="leading-10"
           >
-            ${funded.toFixed(2)}
+            ${(funded * ethPriceInUsd).toFixed(2)}
             <span className="font-sans text-xs text-gray-700">
               {" "}
               raised of ${target_amount.toFixed(2)}
             </span>
           </Text>
           <Progress
-            value={(funded / target_amount) * 100}
+            value={((funded * ethPriceInUsd) / target_amount) * 100}
             colorScheme="green"
             borderRadius={10}
           />
@@ -226,10 +246,11 @@ export default function Camp({
                 <Input
                   placeholder="Amount in ETH"
                   value={donationAmount}
-                  onChange={(e) => setDonationAmount(e.target.value)}
+                  onChange={handleDonationAmountChange}
                   type="number"
                   step="0.01"
                 />
+                <Text mt={2}>~${usdEquivalent.toFixed(2)} USD</Text>
               </>
             )}
           </ModalBody>

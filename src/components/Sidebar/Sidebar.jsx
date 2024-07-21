@@ -18,7 +18,6 @@ const SideNav = ({ selectedId }) => {
   const { logout } = useContext(AuthContext);
 
   return (
-    // NOTE: In prod, you'd likely set height to h-screen and fix to the viewport
     <nav className="h-screen w-fit bg-slate-950 p-4 flex flex-col items-center justify-between">
       <div className="flex flex-col items-center">
         <a href="/">
@@ -32,21 +31,26 @@ const SideNav = ({ selectedId }) => {
         </a>
 
         <div className=" flex flex-col mt-8 gap-2">
-          <Link href="/profile" passHref>
-            <NavItem
-              selected={selected === 0}
-              id={0}
-              setSelected={setSelected}
-              width={100}
-            >
+          <NavItem
+            selected={selected === 0}
+            id={0}
+            setSelected={setSelected}
+            width={100}
+          >
+            <a href="/profile">
               <p className="m-1 text-gray-800">My Profile</p>
-            </NavItem>
-          </Link>
-          <Link href="/profile/my-campaigns" passHref>
-            <NavItem selected={selected === 1} id={1} setSelected={setSelected}>
+            </a>
+          </NavItem>
+          <NavItem selected={selected === 1} id={1} setSelected={setSelected}>
+            <a href="/profile/my-campaigns">
               <p className="m-1 text-gray-800">My Campaigns</p>
-            </NavItem>
-          </Link>
+            </a>
+          </NavItem>
+          <NavItem selected={selected === 2} id={2} setSelected={setSelected}>
+            <a href="/profile/my-rewards">
+              <p className="m-1 text-gray-800">My Rewards</p>
+            </a>
+          </NavItem>
           {/* <Link href="/profile/account-setting" passHref>
             <NavItem selected={selected === 2} id={2} setSelected={setSelected}>
               <p className="m-1 text-gray-800">Account Setting</p>

@@ -16,9 +16,9 @@ import {
   MDBListGroup,
   MDBListGroupItem,
 } from "mdb-react-ui-kit";
+import { Flex, Text, Link } from "@chakra-ui/react";
 import AuthContext from "@/providers/AuthContext";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Loader from "@/components/Custom/BarLoader";
@@ -31,6 +31,7 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     if (token) {
@@ -45,19 +46,32 @@ export default function Home() {
           }
         )
         .then(async (response) => {
+          console.log("Response", response);
           setusername(response.data.username);
           setFirstName(response.data.first_name);
           setLastName(response.data.last_name);
           setEmail(response.data.email);
           setImageUrl(response.data.profile_picture);
+          setTransactions(response.data.transactions);
           setIsLoading(false);
-          await AsyncStorage.setItem("userId", response.data.id.toString());
+          localStorage.setItem("userId", response.data.id.toString());
         })
         .catch((error) => {
           console.error("Error fetching profile:", error);
         });
     }
   }, [token]);
+
+  const recentTransactions = transactions
+    .filter((transaction) => Number(transaction.amount) > 0)
+    .slice(-5)
+    .reverse();
+
+  const formatTransactionLink = (link) => {
+    const parts = link.split("/");
+    const hash = parts[parts.length - 1];
+    return `${hash.slice(0, 6)}...${hash.slice(-6)}`;
+  };
 
   return (
     <main className="flex w-screen h-auto bg-[#f6f0eb]">
@@ -99,55 +113,7 @@ export default function Home() {
 
                     <>
                       <p className="text-muted mb-2 mt-4">{username}</p>
-                      <div className="d-flex justify-content-center mb-2">
-                        <MDBBtn outline className="ms-1">
-                          Change password
-                        </MDBBtn>
-                      </div>
                     </>
-                  </MDBCardBody>
-                </MDBCard>
-
-                <MDBCard className="mb-4 mb-lg-0">
-                  <MDBCardBody className="p-0">
-                    <MDBListGroup flush className="rounded-3">
-                      <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                        <MDBIcon fas icon="globe fa-lg text-warning" />
-                        <MDBCardText>--</MDBCardText>
-                      </MDBListGroupItem>
-                      <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                        <MDBIcon
-                          fab
-                          icon="github fa-lg"
-                          style={{ color: "#333333" }}
-                        />
-                        <MDBCardText>--</MDBCardText>
-                      </MDBListGroupItem>
-                      <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                        <MDBIcon
-                          fab
-                          icon="twitter fa-lg"
-                          style={{ color: "#55acee" }}
-                        />
-                        <MDBCardText>--</MDBCardText>
-                      </MDBListGroupItem>
-                      <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                        <MDBIcon
-                          fab
-                          icon="instagram fa-lg"
-                          style={{ color: "#ac2bac" }}
-                        />
-                        <MDBCardText>--</MDBCardText>
-                      </MDBListGroupItem>
-                      <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                        <MDBIcon
-                          fab
-                          icon="facebook en-lg"
-                          style={{ color: "#3b5998" }}
-                        />
-                        <MDBCardText>--</MDBCardText>
-                      </MDBListGroupItem>
-                    </MDBListGroup>
                   </MDBCardBody>
                 </MDBCard>
               </MDBCol>
@@ -194,6 +160,55 @@ export default function Home() {
                         <MDBCardText className="text-muted">Russia</MDBCardText>
                       </MDBCol>
                     </MDBRow>
+                  </MDBCardBody>
+                </MDBCard>
+              </MDBCol>
+
+              <MDBCol lg="12">
+                <Text className="text-blue-gray-800 text-lg">
+                  My latest Transactions:
+                </Text>
+
+                <MDBCard className="mb-4">
+                  <MDBCardBody className="p-0">
+                    <MDBListGroup flush className="rounded-3">
+                      {recentTransactions.length === 0 ? (
+                        <Text>No donations yet.</Text>
+                      ) : (
+                        recentTransactions.map((transaction) => (
+                          <MDBListGroupItem
+                            className="d-flex justify-content-between align-items-center p-3"
+                            key={transaction.id}
+                          >
+                            <Flex
+                              justifyContent={"space-between"}
+                              p={0.3}
+                              w={"full"}
+                              alignContent={"center"}
+                              alignItems={"center"}
+                            >
+                              <Text minW={"33%"} fontWeight={"bold"} margin={0}>
+                                {/* {formatCampaignString(transaction.reason)} */}
+                                {transaction.reason}
+                              </Text>
+                              {/* <Text className="text-sm text-gray-700">
+                                {Number(transaction.amount).toFixed(2)} ETH
+                              </Text> */}
+                              <Link
+                                key={transaction.id}
+                                href={transaction.link}
+                                isExternal
+                                color="teal.500"
+                                display="block"
+                                mb={2}
+                              >
+                                {formatTransactionLink(transaction.link)}
+                              </Link>
+                            </Flex>
+                          </MDBListGroupItem>
+                        ))
+                      )}
+                    </MDBListGroup>
                   </MDBCardBody>
                 </MDBCard>
               </MDBCol>

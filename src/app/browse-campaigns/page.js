@@ -7,6 +7,7 @@ import Footer from "@/components/Footer/Footer";
 import AuthContext from "@/providers/AuthContext";
 import Loader from "@/components/Custom/BarLoader";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
+import { fetchEthPriceInUsd } from "@/utils/ethToUsd";
 
 export default function Campaigns() {
   const [campaigns, setCampaigns] = useState([]);
@@ -14,6 +15,18 @@ export default function Campaigns() {
   const [currentPage, setCurrentPage] = useState(1);
   const [paginationLinks, setPaginationLinks] = useState([]);
   const { token } = useContext(AuthContext);
+  const [ethPriceInUsd, setEthPriceInUsd] = useState(0);
+
+  useEffect(() => {
+    const getEthPrice = async () => {
+      const price = await fetchEthPriceInUsd();
+      if (price !== null) {
+        console.log("Price", price);
+        setEthPriceInUsd(price);
+      }
+    };
+    getEthPrice();
+  }, []);
 
   useEffect(() => {
     fetchCampaigns(currentPage);
@@ -79,11 +92,13 @@ export default function Campaigns() {
                 desc={campaign.description}
                 days={campaign.days_left}
                 funded={
-                  (campaign.collected_amount / campaign.target_amount) * 100
+                  ((campaign.collected_amount * ethPriceInUsd) /
+                    campaign.target_amount) *
+                  100
                 }
                 target_amount={campaign.target_amount}
                 img={`https://block-funders.haidarjbeily.com/public/storage/${campaign.image}`}
-                profileImg={"./imgs/home/profile1.png"}
+                profileImg={campaign.user.profile_picture}
               />
             ))}
           </div>

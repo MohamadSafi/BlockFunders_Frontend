@@ -1,11 +1,51 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import axios from "axios";
 import CampaignCard from "../Custom/CampaignCard";
+import AuthContext from "@/providers/AuthContext";
+import { fetchEthPriceInUsd } from "@/utils/ethToUsd";
 
 const CampaignCarousel = () => {
   const sliderRef = useRef(null);
+  const { token } = useContext(AuthContext);
+  const [campaigns, setCampaigns] = useState([]);
+  const [ethPriceInUsd, setEthPriceInUsd] = useState(0);
+
+  useEffect(() => {
+    const getEthPrice = async () => {
+      const price = await fetchEthPriceInUsd();
+      if (price !== null) {
+        setEthPriceInUsd(price);
+      }
+    };
+    getEthPrice();
+  }, []);
+
+  useEffect(() => {
+    fetchCampaigns();
+  }, [token]);
+
+  const fetchCampaigns = () => {
+    axios
+      .get("https://block-funders.haidarjbeily.com/public/api/campaigns", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          with_paginate: 1,
+          per_page: 5,
+          q: "published",
+        },
+      })
+      .then((response) => {
+        setCampaigns(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching campaigns:", error);
+      });
+  };
 
   const settings = {
     dots: true,
@@ -44,54 +84,25 @@ const CampaignCarousel = () => {
   return (
     <div className="relative mt-16">
       <Slider ref={sliderRef} {...settings}>
-        <div className="p-4">
-          <CampaignCard
-            username={"Sam whinchester"}
-            firstName={"Sam"}
-            lastName={"whinchester"}
-            title={"Lance | O₂ – Light & Smart | Built in Titanium"}
-            desc={
-              "Designed on Earth, used in space. Titanium, almost imperceptible. Wearing them feels as natural as breathing."
-            }
-            days={20}
-            funded={40}
-            img={"imgs/home/camp1.png"}
-            profileImg={"imgs/home/profile2.png"}
-            target_amount={1500}
-          />
-        </div>
-        <div className="p-4">
-          <CampaignCard
-            username={"Dean whinchester"}
-            firstName={"Dean"}
-            lastName={"whinchester"}
-            title={"NLT SonRise Edition Bible"}
-            desc={
-              "A beautifully designed Bible that's handbound with full-grain leather."
-            }
-            days={25}
-            funded={10}
-            img={"imgs/home/camp2.png"}
-            profileImg={"imgs/home/profile1.png"}
-            target_amount={3000}
-          />
-        </div>
-        <div className="p-4">
-          <CampaignCard
-            username={"Zack sniper"}
-            firstName={"Zack"}
-            lastName={"sniper"}
-            title={"The Lord of the Rings Playing Cards Vol. 3"}
-            desc={
-              "Officially Licensed playing cards inspired by The Lord of the Rings™, The Return of the King"
-            }
-            days={"2"}
-            funded={90}
-            img={"imgs/home/camp3.png"}
-            profileImg={"imgs/home/profile.png"}
-            target_amount={20000}
-          />
-        </div>
+        {campaigns.map((campaign) => (
+          <div className="p-4" key={campaign.id}>
+            <CampaignCard
+              id={campaign.id}
+              firstName={campaign.user.first_name}
+              lastName={campaign.user.last_name}
+              title={campaign.title}
+              desc={campaign.description}
+              days={campaign.days_left}
+              funded={
+                (campaign.collected_amount / campaign.target_amount) * 100
+              }
+              img={`https://block-funders.haidarjbeily.com/public/storage/${campaign.image}`}
+              profileImg={campaign.user.profile_picture}
+              target_amount={campaign.target_amount}
+              ethPrice={ethPriceInUsd}
+            />
+          </div>
+        ))}
       </Slider>
       <div className="absolute top-[-10] right-0 flex space-x-2">
         <PrevArrow className="custom-prev-arrow" onClick={previous} />

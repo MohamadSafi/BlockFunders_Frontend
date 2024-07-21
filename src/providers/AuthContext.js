@@ -9,7 +9,6 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // Load token from localStorage if it exists
     const storedToken = localStorage.getItem("token");
 
     if (storedToken) {

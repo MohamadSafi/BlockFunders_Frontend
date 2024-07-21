@@ -11,7 +11,7 @@ export default function CampaignCard({
   img,
   profileImg,
   profile = false,
-  id, // Add id prop
+  id,
 }) {
   const router = useRouter();
 
@@ -29,12 +29,12 @@ export default function CampaignCard({
   return (
     <div
       onClick={handleClick}
-      className="bg-white rounded-2xl h-96 p-4 shadow-xl w-full cursor-pointer"
+      className="bg-white rounded-2xl h-fit p-4 shadow-xl w-full cursor-pointer"
     >
       <img
         src={img}
         alt="Campaign"
-        className="h-32 w-full object-cover rounded-t-2xl"
+        className="h-64 w-full object-cover rounded-t-2xl"
       />
       {profile ? (
         <></>
@@ -55,7 +55,7 @@ export default function CampaignCard({
         <div className="h-2 bg-gray-200 rounded-full">
           <div
             className="h-full bg-[#2e9df8] rounded-full"
-            style={{ width: `${funded}%` }}
+            style={{ width: `${funded}%`, maxWidth: "100%" }}
           ></div>
         </div>
         <div className="flex justify-between mt-2">
