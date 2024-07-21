@@ -22,7 +22,7 @@ import { useAccount } from "wagmi";
 import { useState, useEffect, useCallback, useContext } from "react";
 import axios from "axios";
 import AuthContext from "@/providers/AuthContext";
-import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useWriteContract } from "wagmi";
 import { contractABI } from "../../../public/contractABI/contractABI";
 import { fetchEthPriceInUsd } from "@/utils/ethToUsd";
 import { useRouter } from "next/navigation";
@@ -76,22 +76,29 @@ export default function Camp({
       const formData = new FormData();
       formData.append("tx_hash", hash);
       formData.append("amount", donationAmount);
-      try {
-        const response = await axios.post(
-          `https://block-funders.haidarjbeily.com/public/api/campaigns/${id}/fund`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-            },
+      const maxRetries = 3;
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          const response = await axios.post(
+            `https://block-funders.haidarjbeily.com/public/api/campaigns/${id}/fund`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          console.log(response);
+          if (response.status === 200) {
+            break; // Exit the loop if the response is OK
           }
-        );
-        console.log(response);
-        // setIsThankYouVisible(true);router. refresh()
-        // router. refresh()
-      } catch (error) {
-        console.error("Error:", error);
+        } catch (error) {
+          console.error(`Attempt ${attempt} failed:`, error);
+          if (attempt === maxRetries) {
+            console.error("All attempts failed.");
+          }
+        }
       }
     },
     [hash, token, donationAmount]
@@ -107,8 +114,6 @@ export default function Camp({
   const handleDonation = () => {
     const donationAmountInWei = BigInt(donationAmount * 10 ** 18);
     const numberId = Number(id);
-    console.log(numberId);
-    console.log(typeof numberId);
     writeContract({
       address: "0x1bbb0896aC6F4E32a89157C73Fb830325a441cb9",
       abi: contractABI,
