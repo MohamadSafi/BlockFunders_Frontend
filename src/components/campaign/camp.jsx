@@ -26,6 +26,7 @@ import { useWriteContract } from "wagmi";
 import { contractABI } from "../../../public/contractABI/contractABI";
 import { fetchEthPriceInUsd } from "@/utils/ethToUsd";
 import { useRouter } from "next/navigation";
+import Loader from "../Custom/BarLoader";
 
 export default function Camp({
   firstName,
@@ -48,6 +49,7 @@ export default function Camp({
   const [isThankYouVisible, setIsThankYouVisible] = useState(false);
   const [ethPriceInUsd, setEthPriceInUsd] = useState(0);
   const [usdEquivalent, setUsdEquivalent] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -73,6 +75,7 @@ export default function Camp({
 
   const submitDonate = useCallback(
     async (id) => {
+      setIsLoading(true); // Set loading to true when starting the request
       const formData = new FormData();
       formData.append("tx_hash", hash);
       formData.append("amount", donationAmount);
@@ -100,16 +103,21 @@ export default function Camp({
           }
         }
       }
+      setIsLoading(false); // Set loading to false when the request is complete
+      // setIsThankYouVisible(true); // Reset thank you message visibility
+      // setDonationAmount(""); // Reset donation amount
+      // setUsdEquivalent(0); // Reset USD equivalent
     },
     [hash, token, donationAmount]
   );
 
   useEffect(() => {
     if (hash) {
+      onClose();
       submitDonate(id);
-      router.refresh();
+      // router.refresh();
     }
-  }, [hash, submitDonate, id, router]);
+  }, [hash, submitDonate, id, , onClose]);
 
   const handleDonation = () => {
     const donationAmountInWei = BigInt(donationAmount * 10 ** 18);
@@ -140,6 +148,16 @@ export default function Camp({
 
   return (
     <Box overflow="hidden" p={5} maxW={"70%"}>
+      <Box
+        position="fixed"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        zIndex="1000"
+        bg="rgba(255, 255, 255, 0.7)" // Opt
+      >
+        {isLoading && <Loader />}
+      </Box>
       <Heading as="h3" size="lg" mb={4}>
         {title}
       </Heading>
@@ -248,7 +266,16 @@ export default function Camp({
           <ModalCloseButton />
           <ModalBody>
             {isThankYouVisible ? (
-              <Text>Thank you for your donation!</Text>
+              <Flex flexDir={"row"} alignItems={"center"}>
+                <Text mb={8}>Thank you for your donation!</Text>
+                <Image
+                  src="/imgs/home/thanks.svg"
+                  alt="Thank you"
+                  width="50px"
+                  height="50px"
+                  mb={8}
+                />
+              </Flex>
             ) : (
               <>
                 <Text mb={2}>Enter the amount of ETH you want to donate:</Text>
