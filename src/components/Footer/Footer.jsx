@@ -61,7 +61,7 @@ export default function Footer() {
           <div className="">
             <div className="text-gray-700">Follow us</div>
             <div className="flex mt-5 space-x-5 text-gray-700 dark:text-gray-700">
-              <a href="https://twitter.com" target="_blank" rel="noopener">
+              <a href="https://x.com/BlockFundrs" target="_blank" rel="noopener">
                 <span className="sr-only">Twitter</span>
                 <Twitter />
               </a>
