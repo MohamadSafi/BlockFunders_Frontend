@@ -130,7 +130,7 @@ export default function FeaturedSection() {
             </div>
           </div> */}
         {/* </div> */}
-        <div className="mx-16">
+        <div className="mx-2 md:mx-16">
           <CampaignCarousel />
         </div>
       </div>

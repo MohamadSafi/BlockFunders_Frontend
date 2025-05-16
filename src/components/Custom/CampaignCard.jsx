@@ -58,7 +58,7 @@ export default function CampaignCard({
           <span className="text-sm font-semibold">
             {funded.toFixed(2)}% from {target_amount} ETH
           </span>
-          <span className="text-sm text-gray-600">{days} days left</span>
+          <span className="text-sm text-gray-600">{days + 300} days left</span>
         </div>
       </div>
     </div>

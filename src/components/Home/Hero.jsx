@@ -8,7 +8,7 @@ const ShuffleHero = () => {
   const { token } = useContext(AuthContext);
 
   return (
-    <div className="h-[70vh] mx-36 flex items-center">
+    <div className="h-[70vh] mx-2 mt-24 mb-16 md:mb-4 md:mt-0 md:mx-36 flex items-center">
       <section className="w-full px-2 grid grid-cols-1 md:grid-cols-2 items-center gap-8 max-w-auto mx-auto">
         <div>
           <h3 className="text-4xl md:text-6xl font-semibold">
